@@ -12,10 +12,29 @@
 /*************************/
 VescUart VESCUART;
 ArduinoNunchuk nunchuk = ArduinoNunchuk();
-int throttle = 0; //Controls speed. Low = 33, Mid = 129, High = 230
+bool nunchukConnected = 0;
+bool setupComplete = 0;
+
+int throttle = 0; //Controls speed. Low = 2, Mid = 127, High = 255
 float current = 0.0;
-bool freeSwitch = 0;
-String command;
+
+const int frontSensorPin = A0;
+const int backSensorPin = A1;
+int sensorValue;
+
+int ledPin1 = 4; //Head L
+int ledPin2 = 5; //H ead R
+int ledPin3 = 6; //Back L
+int ledPin4 = 7; //Back R
+
+int melodyOn[] = { 587, 740, 880, 1175 }; // D, F#, A, D
+int melodyOnDuration[] = { 8, 8, 8, 4 };
+
+int melodySensor[] = { 587, 880, 587, 0 }; //D, A, D
+int melodySensorDuration[] = { 8, 8, 8, 4 };
+
+int melodyLock[] = { 392, 392, 392, 0 }; //G, G, G
+int melodyLockDuration[] = { 8, 8, 8, 4 };
 
 /*************************/
 /********FUNCTIONS********/
@@ -29,89 +48,128 @@ void JoystickADC()
 }
 
 //Converts analog signal from deck sensors
-void SensorADC()
-{
+bool SensorADC()
+{ 
+  int frontSensorValue;
+  int backSensorValue;
+  bool feetOnDeck = 0;
+
   
+  frontSensorValue = analogRead(frontSensorPin);
+  backSensorValue = analogRead(backSensorPin);
+  Serial.print(frontSensorValue);
+  Serial.print(" ");
+  Serial.println(backSensorValue);
+
+//  frontSensorValue = 2; backSensorValue = 2; //Override lock, for testing purposes
+
+  if(frontSensorValue < 27 && backSensorValue < 50) //Threshold for front and back sensors
+    feetOnDeck = 1;
+  else
+    feetOnDeck = 0;
+    
+  return feetOnDeck;
+}
+
+void playMelody( int melodyToPlay[], int melodyDuration[] )
+{
+  int duration; 
+  
+  for(int x = 0; x < 4; x++)
+  {
+    duration = 1000 / melodyDuration[x];
+    tone(8, melodyToPlay[x], duration);
+
+    int pauseBetweenNotes = duration * 1.3;
+    delay(pauseBetweenNotes);
+    // stop the tone playing:
+    noTone(8);
+  }
 }
 
 /*************************/
 /******STATE MACHINE******/
 /*************************/
 
-enum States_Free_Switch {SWITCH_INIT, SWITCH_ON, SWITCH_OFF, SWITCH_SETON, SWITCH_SETOFF} state1;
-void checkFree()
+enum States_Headlight {LIGHT_INIT, LIGHT_ON, LIGHT_OFF, LIGHT_SETON, LIGHT_SETOFF} state2;
+void headlight()
 {
   //Transitions
-  switch(state1)
+  switch(state2)
   {
-    case SWITCH_INIT:
-      state1 = SWITCH_OFF;
+    case LIGHT_INIT:
+      state2 = LIGHT_OFF;
       
       break;
       
-    case SWITCH_OFF:
-      if(nunchuk.zButton == 0)
-        state1 = SWITCH_OFF;
+    case LIGHT_OFF:
+      if(nunchuk.cButton == 0)
+        state2 = LIGHT_OFF;
       else
-        state1 = SWITCH_SETON;
-      
-      break;
-
-    case SWITCH_ON:
-      if(nunchuk.zButton == 0)
-        state1 = SWITCH_ON;
-      else
-        state1 = SWITCH_SETOFF;
+        state2 = LIGHT_SETON;
       
       break;
 
-    case SWITCH_SETON:
-      if(nunchuk.zButton == 1)
-        state1 = SWITCH_SETON;
+    case LIGHT_ON:
+      if(nunchuk.cButton == 0)
+        state2 = LIGHT_ON;
       else
-        state1 = SWITCH_ON;
+        state2 = LIGHT_SETOFF;
       
       break;
 
-    case SWITCH_SETOFF:
-      if(nunchuk.zButton == 1)
-        state1 = SWITCH_SETOFF;
+    case LIGHT_SETON:
+      if(nunchuk.cButton == 1)
+        state2 = LIGHT_SETON;
       else
-        state1 = SWITCH_OFF;
+        state2 = LIGHT_ON;
+      
+      break;
+
+    case LIGHT_SETOFF:
+      if(nunchuk.cButton == 1)
+        state2 = LIGHT_SETOFF;
+      else
+        state2 = LIGHT_OFF;
       
       break;
   }
   
   //Actions
-  switch(state1)
+  switch(state2)
   {
-     case SWITCH_INIT:
+     case LIGHT_INIT:
       break;
       
-    case SWITCH_OFF:
-      freeSwitch = 0;
-      
-      break;
-
-    case SWITCH_ON:
-      freeSwitch = 1;
+    case LIGHT_OFF:
+      digitalWrite(ledPin1, LOW);
+      digitalWrite(ledPin2, LOW);
+      digitalWrite(ledPin3, LOW);
+      digitalWrite(ledPin4, LOW);
       
       break;
 
-    case SWITCH_SETON:
+    case LIGHT_ON:
+      digitalWrite(ledPin1, HIGH);
+      digitalWrite(ledPin2, HIGH);
+      digitalWrite(ledPin3, HIGH);
+      digitalWrite(ledPin4, HIGH);
+      
       break;
 
-    case SWITCH_SETOFF:
+    case LIGHT_SETON:
+      break;
+
+    case LIGHT_SETOFF:
       break;
   }
 }
 
-enum States {INIT, LOCK, FREE, NEUTRAL, ACCEL, DECEL} state;
+enum States {INIT, LOCK, NEUTRAL, ACCEL, DECEL} state;
 void runBoard() 
 {
 //  Init: Initial setup
 //  Lock: Board is controlled by sensors and remote. Both feet are not on deck, board slows down until stopped.
-//  Free: board rolls freely
 //  Netural: Both feet are on deck, joystick in 0 position. Board rolls freely
 //  Accel: Board accelerates depending on position of joystick
 //  Decel: Board decelerates depending on position of joystick
@@ -121,42 +179,37 @@ void runBoard()
   switch(state)
   {
     case INIT:
-      if(freeSwitch == 0) 
+      if(SensorADC() == 0) 
         state = LOCK;
       else
-        state = FREE;
+        state = NEUTRAL;
         
-      Serial.println("Init");
-      state = LOCK; 
       break;
 
   
     case LOCK:
-      if(freeSwitch == 1) //If FREE switch activated, state FREE
-        state = FREE;
-//      
-//      if(/*both feet*/ == 1) //If both feet are on, board is neutral. Otherwise, lock board
-//        state = NEUTRAL;
-//      else
-//        state = LOCK;
-
-      state = NEUTRAL;
-        
-      break;
-
-
-    case FREE:
-      if(freeSwitch == 0) //If FREE switch deactivated, state LOCK. Otherwise, stay FREE
-        state = LOCK;
+      if(SensorADC() == 1) //If both feet are on, board is neutral. Otherwise, lock board
+      {
+        playMelody(melodySensor, melodySensorDuration);
+        state = NEUTRAL;
+      }
       else
-        state = FREE;
+        state = LOCK;
         
       break;
-
       
     case NEUTRAL:
-      if(freeSwitch == 1) //If FREE switch activated, state FREE
-         state = FREE;
+      if(SensorADC() == 0) //If both feet are off, lock board
+      {
+        JoystickADC();
+        if(VESCUART.data.rpm != 0)
+          current = -2.0;
+        else
+          current = 0.0;
+          
+        playMelody(melodyLock, melodyLockDuration);
+        state = LOCK;
+      }
       else
         if(throttle >= 131) //If joystick moves up, accelerate (+- 4 threshold)
           state = ACCEL;
@@ -167,48 +220,35 @@ void runBoard()
             if(throttle > 123 && throttle < 131)
                 state = NEUTRAL;
 
-//   
-//      if(/*both feet*/ == 0) //If both feet are off, lock board
-//        state = LOCK;
       break;
 
 
     case ACCEL:
-      if(freeSwitch == 1) //If FREE switch activated, state FREE
-        state = FREE;
-//
-//      if(/*both feet*/ == 0) //If both feet are off, lock board
-//        state = LOCK;
-//
-      if(throttle < 131) //If joystick moves down
+      if(SensorADC() == 0) //If both feet are off, lock board
       {
-        if(VESCUART.data.rpm == 0) //Reverse
-          state = NEUTRAL;   
-
-        VESCUART.setCurrent(-2.0); //Slow down
+        playMelody(melodyLock, melodyLockDuration);
+        state = LOCK;
       }
       else
-        state = ACCEL;
-         
+        if(throttle < 131) //If joystick moves down
+          state = NEUTRAL;   
+        else
+          state = ACCEL;
+             
       break;
 
     case DECEL:
-      if(freeSwitch == 1) //If FREE switch activated, state FREE
-        state = FREE;
-//
-//      if(/*both feet*/ == 0) //If both feet are off, lock board
-//        state = LOCK;
-//
-      if(throttle > 123) //If joystick moves up, accelerate
+      if(SensorADC() == 0) //If both feet are off, lock board
       {
-        if(VESCUART.data.rpm == 0) //Accel
-          state = NEUTRAL;
-
-        VESCUART.setCurrent(2.0); //Slow down
+        playMelody(melodyLock, melodyLockDuration);
+        state = LOCK;
       }
-      else  
-        state = DECEL;
-        
+      else
+        if(throttle > 123) //If joystick moves up, accelerate
+          state = NEUTRAL;
+        else  
+          state = DECEL;
+      
       break;
   }
 
@@ -219,20 +259,15 @@ void runBoard()
     case INIT:
       break;
 
-    case LOCK:
-      break;
-
-    case FREE:
-      Serial.println("Free: ");
+    case LOCK: //Slow down board until stopped
       JoystickADC();
-      
+      if(VESCUART.data.rpm != 0)
+        current = -2.0;
+      else
+        current = 0.0;
       break;
 
     case NEUTRAL:
-      Serial.print("Neutral: ");
-      Serial.print(VESCUART.nunchuck.valueY); 
-      Serial.print("   Current: ");
-      Serial.println(current);  
       current = 0.0; 
       VESCUART.setCurrent(current);
 
@@ -243,11 +278,7 @@ void runBoard()
     case ACCEL:
       JoystickADC();
       VESCUART.nunchuck.valueY = throttle;
-      Serial.print("Accel: ");
-      Serial.print(VESCUART.nunchuck.valueY); 
-      Serial.print("   Current: ");
-      Serial.println(current);  
-      current = (VESCUART.nunchuck.valueY - 130) * 0.34;
+      current = (VESCUART.nunchuck.valueY - 131) * 0.4; //50A max throttle/brake
       VESCUART.setCurrent(current);
       
       break;
@@ -255,13 +286,7 @@ void runBoard()
     case DECEL:
       JoystickADC();
       VESCUART.nunchuck.valueY = throttle;        
-      Serial.print("Decel:  ");
-      Serial.print(VESCUART.nunchuck.valueY); 
-      Serial.print("   Current: ");
-      Serial.println(current);
-      current = -(abs(VESCUART.nunchuck.valueY - 130) * 0.34); //Hard stop, reverse
-
-        
+      current = -(abs(VESCUART.nunchuck.valueY - 123) * 0.4); //Hard stop, reverse
       VESCUART.setCurrent(current);
       
       break;
@@ -278,12 +303,44 @@ void setup()
   Serial.begin(115200);
   VESCUART.setSerialPort(&Serial);
   nunchuk.init();
+  digitalWrite(A0, HIGH);
+  digitalWrite(A1, HIGH);
+  
   //Initialize output
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  pinMode(ledPin3, OUTPUT);
+  pinMode(ledPin4, OUTPUT);
+
+  delay(1000);
+  playMelody(melodyOn, melodyOnDuration);
 
 }
 
 void loop() 
 {
-  runBoard();
-  checkFree();
+  nunchuk.update();
+  Serial.println(nunchuk.analogY);
+  if(nunchukConnected  == 0 && setupComplete == 0) //Deals with random values when nunchuk is not connected yet
+  {
+    if(nunchuk.analogY == 255 ) //255: default value when nunchuck connects
+    {
+      nunchukConnected = 1;
+    }
+    else
+    {
+      nunchukConnected = 0;
+    }
+  }
+  else
+    if(nunchukConnected  == 1 && setupComplete == 0) //Reset nunchuck init
+    {
+        nunchuk.init();
+        setupComplete = 1;
+    }
+    else
+    {
+        runBoard();
+        headlight(); 
+    }
 }
