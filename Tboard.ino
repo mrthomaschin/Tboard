@@ -63,7 +63,7 @@ bool SensorADC()
 
 //  frontSensorValue = 2; backSensorValue = 2; //Override lock, for testing purposes
 
-  if(frontSensorValue < 27 && backSensorValue < 50) //Threshold for front and back sensors
+  if(frontSensorValue < 21 || backSensorValue < 38) //Threshold for front and back sensors
     feetOnDeck = 1;
   else
     feetOnDeck = 0;
@@ -78,12 +78,12 @@ void playMelody( int melodyToPlay[], int melodyDuration[] )
   for(int x = 0; x < 4; x++)
   {
     duration = 1000 / melodyDuration[x];
-    tone(8, melodyToPlay[x], duration);
+    tone(9, melodyToPlay[x], duration);
 
     int pauseBetweenNotes = duration * 1.3;
     delay(pauseBetweenNotes);
     // stop the tone playing:
-    noTone(8);
+    noTone(9);
   }
 }
 
@@ -320,7 +320,7 @@ void setup()
 void loop() 
 {
   nunchuk.update();
-  Serial.println(nunchuk.analogY);
+  //Serial.println(nunchuk.analogY);
   if(nunchukConnected  == 0 && setupComplete == 0) //Deals with random values when nunchuk is not connected yet
   {
     if(nunchuk.analogY == 255 ) //255: default value when nunchuck connects
