@@ -2,19 +2,21 @@
 
 An Arduino-powered electric skateboard.
 
+<img src="Images/IMG_0749.JPG" width="600" height = "=500" />
+
 ## Introduction
 
 As a UCR student living off-campus, I believe that a suitable method of transportation is essential. During previous years, I have commuted to campus using various forms of transportation including bikes, skateboards, RTA shuttles, and by car, and all seem to have a downside to them. Recently, the use of rental electric vehicles have grown substantially and have impacted the way people commute. For my project, I decided to create an electric skateboard.
 
 An electric skateboard would be an efficient and easy way for a student to get to campus. It maintains the size of a regular skateboard, eliminates the use for a bike lock, decreases the time it takes to get to campus, and saves the user money from gas and parking expenses. This build will also be much cheaper than other brands. The board will utilize two pressure sensors which will allow the board to move only when at least one of the user’s feet are on the deck. It will also come with headlights and taillights. The board will also play sounds when the board turns off and when the foot placement is detected. Any student living within a surface-road distance to campus and looking for an efficient and affordable method of transportation would highly enjoy this project.
 
-<img src="Images/IMG_0749.JPG" width="600" height = "=500" />
-
 ## About
 
 The Tboard is an Arduino-powered electric skateboard. It has built-in headlights and tail lights, as well as two sensors on top of the longboard deck to detect foot placement. A built-in speaker plays specific tones upon startup and foot-sensor detection for an enjoyable user experience. It is also controlled with a wireless Wii Nunchuk. The Tboard boasts a speed of over 20+mph with a battery life that lasts 10-12 miles on a single charge. And in summary, the cost of this project came down to 1/5th the price of the standard Boosted Board. To this day, I use this board to commute to and from campus.
 
 The primary goal of this project was to focus on the safety of the board. If the user happens the fall off the board, the controls would lock and the board will slow itself down to a complete stop. The user also cannot trigger the board if he/she were to accidentally press the throttle.
+
+More pictures can be found in the "Images" folder.
 
 ## Wiring Diagram
 
