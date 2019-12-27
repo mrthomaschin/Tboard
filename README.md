@@ -12,7 +12,7 @@ An electric skateboard would be an efficient and easy way for a student to get t
 
 ## About
 
-The Tboard is an Arduino-powered electric skateboard. It has built-in headlights and tail lights, as well as two sensors on top of the longboard deck to detect foot placement. A built-in speaker plays specific tones upon startup and foot-sensor detection for an enjoyable user experience. It is also controlled with a wireless Wii Nunchuk. The Tboard boasts a speed of over 20+mph with a battery life that lasts 10-12 miles on a single charge. And in summary, the cost of this project came down to 1/5th the price of the standard Boosted Board. To this day, I use this board to commute to and from campus.
+The Tboard is an Arduino-powered electric skateboard. It has built-in headlights and tail lights, as well as two sensors on top of the longboard deck to detect foot placement. A built-in speaker plays specific tones upon startup and foot-sensor detection for an enjoyable user experience. It is also controlled with a wireless Wii Nunchuk. The Tboard boasts a speed of over 20+ mph with a battery life that lasts 10-12 miles on a single charge. And in summary, the cost of this project came down to 1/5th the price of the standard Boosted Board. To this day, I use this board to commute to and from campus.
 
 The primary goal of this project was to focus on the safety of the board. If the user happens the fall off the board, the controls would lock and the board will slow itself down to a complete stop. The user also cannot trigger the board if he/she were to accidentally press the throttle.
 
@@ -44,10 +44,10 @@ if(nunchukConnected  == 1 && setupComplete == 0)
 }
 ```
 
-### Begin state machine
+#### Begin state machine
 After the Arduino has successfully verified that the nunchuk is connected, the state machine begins.
 
-### Arduino receives sensor values
+#### Arduino receives sensor values
 
  Two velostat sensors lie underneath the grip tape of the board, detecting foot placement. For this board, the threshold values are 46 and 108, based on how much pressure is on the sensors already. When the average person with some sort of footwear steps on the board, the values drop below 30. Therefore when either one of the sensors detects the users feet, the board will be able to accelerate.
 
