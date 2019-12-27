@@ -8,7 +8,7 @@ As a UCR student living off-campus, I believe that a suitable method of transpor
 
 An electric skateboard would be an efficient and easy way for a student to get to campus. It maintains the size of a regular skateboard, eliminates the use for a bike lock, decreases the time it takes to get to campus, and saves the user money from gas and parking expenses. This build will also be much cheaper than other brands. The board will utilize two pressure sensors which will allow the board to move only when at least one of the user’s feet are on the deck. It will also come with headlights and taillights. The board will also play sounds when the board turns off and when the foot placement is detected. Any student living within a surface-road distance to campus and looking for an efficient and affordable method of transportation would highly enjoy this project.
 
-![alt text](https://github.com/mrthomaschin/Tboard/tree/master/Images/IMG_0749.JPG)
+<img src="Images/IMG_0749.JPG" width="600" height = "=500" />
 
 ## About
 
@@ -18,9 +18,9 @@ The primary goal of this project was to focus on the safety of the board. If the
 
 ## Wiring Diagram
 
-![alt text](https://github.com/mrthomaschin/Tboard/tree/master/Images/IMG_0225.jpg)
+<img src="Images/IMG_0225.jpg" width="350" height = "500" />
 
-![alt text](https://github.com/mrthomaschin/Tboard/tree/master/Images/IMG_0226.jpg)
+<img src="Images/IMG_0226.jpg" width="350" height = "500" />
 
 ## Features
 
