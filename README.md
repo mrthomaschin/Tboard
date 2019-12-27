@@ -8,7 +8,7 @@ An Arduino-powered electric skateboard.
 
 As a UCR student living off-campus, I believe that a suitable method of transportation is essential. During previous years, I have commuted to campus using various forms of transportation including bikes, skateboards, RTA shuttles, and by car, and all seem to have a downside to them. Recently, the use of rental electric vehicles have grown substantially and have impacted the way people commute. For my project, I decided to create an electric skateboard.
 
-An electric skateboard would be an efficient and easy way for a student to get to campus. It maintains the size of a regular skateboard, eliminates the use for a bike lock, decreases the time it takes to get to campus, and saves the user money from gas and parking expenses. This build will also be much cheaper than other brands. The board will utilize two pressure sensors which will allow the board to move only when at least one of the user’s feet are on the deck. It will also come with headlights and taillights. The board will also play sounds when the board turns off and when the foot placement is detected. Any student living within a surface-road distance to campus and looking for an efficient and affordable method of transportation would highly enjoy this project.
+An electric skateboard would be an efficient and easy way for a student to get to campus. It maintains the size of a regular skateboard, eliminates the use for a bike lock, decreases the time it takes to get to campus, and saves the user money from gas and parking expenses.
 
 ## About
 
