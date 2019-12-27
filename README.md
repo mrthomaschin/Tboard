@@ -6,13 +6,13 @@ An Arduino-powered electric skateboard.
 
 ## Introduction
 
-As a UCR student living off-campus, I believe that a suitable method of transportation is essential. During previous years, I have commuted to campus using various forms of transportation including bikes, skateboards, RTA shuttles, and by car, and all seem to have a downside to them. Recently, the use of rental electric vehicles have grown substantially and have impacted the way people commute. For my project, I decided to create an electric skateboard.
+As a UCR student living off-campus, I believe that a suitable method of transportation is essential. During previous years, I have commuted to campus using various forms of transportation including bikes, skateboards, public buses, and by car, and all seem to have a downside to them. Recently, the use of rental electric vehicles have grown substantially and have impacted the way people commute. For my project, I decided to create an electric skateboard.
 
 An electric skateboard would be an efficient and easy way for a student to get to campus. It maintains the size of a regular skateboard, eliminates the use for a bike lock, decreases the time it takes to get to campus, and saves the user money from gas and parking expenses.
 
 ## About
 
-The Tboard is an Arduino-powered electric skateboard. An Arduino is connected to the skateboard's speed controller via UART. It has built-in headlights and tail lights, as well as two sensors on top of the longboard deck to detect foot placement. A built-in speaker plays specific tones upon startup and foot-sensor detection for an enjoyable user experience. It is also controlled with a wireless Wii Nunchuk. The Tboard boasts a speed of over 20+ mph with a battery life that lasts 10-12 miles on a single charge. And in summary, the cost of this project came down to 1/5th the price of the standard Boosted Board. To this day, I use this board to commute to and from campus.
+The Tboard is an Arduino-powered electric skateboard. An Arduino is connected to the skateboard's speed controller via UART. It has built-in headlights and tail lights, as well as two sensors on top of the longboard deck to detect foot placement. A built-in speaker plays specific tones upon startup and foot-sensor detection for an enjoyable user experience. A power switch and battery level indicator are built into the electronics housing. It is also controlled with a wireless Wii Nunchuk. The Tboard boasts a speed of over 20+ mph with a battery life that lasts 10-12 miles on a single charge. And in summary, the cost of this project came down to 1/5th the price of the standard Boosted Board. To this day, I use this board to commute to and from campus.
 
 The primary goal of this project was to focus on the safety of the board. If the user happens the fall off the board, the controls would lock and the board will slow itself down to a complete stop. The user also cannot trigger the board if he/she were to accidentally press the throttle.
 
