@@ -18,9 +18,9 @@ The primary goal of this project was to focus on the safety of the board. If the
 
 ## Wiring Diagram
 
-<img src="Images/IMG_0225.jpg" width="350" height = "500" />
+<img src="Images/IMG_0225.jpg" width="300" height = "450" />
 
-<img src="Images/IMG_0226.jpg" width="350" height = "500" />
+<img src="Images/IMG_0226.jpg" width="300" height = "450" />
 
 ## Features
 
@@ -96,10 +96,8 @@ The headlights run in a separate state machine. This helps because it does not c
 
  ## Known Bugs
 
- * The wireless nunchuk can only be held at a certain distance until it disconnects.
-  * This can be bad, as the board will maintain a constant speed upon disconnecting. I would have to extend the nunchuk cable and place it in a well-exposed position versus underneath the board.
- * The lights turn off when a significant amount of throttle is applied to the motor.
-  * Because the VESC controls both the motor and the Arduino, I suspect that when an increase in power is needed, especially when commuting uphill, it directs more power into the motor and therefore turns off the lights temporarily.
+ * The wireless nunchuk can only be held at a certain distance until it disconnects. This can be bad, as the board will maintain a constant speed upon disconnecting. I would have to extend the nunchuk cable and place it in a well-exposed position versus underneath the board.
+ * The lights turn off when a significant amount of throttle is applied to the motor. Because the VESC controls both the motor and the Arduino, I suspect that when an increase in power is needed, especially when commuting uphill, it directs more power into the motor and therefore turns off the lights temporarily.
 
 
 ## Acknowledgements
